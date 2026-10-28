@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PLAY</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      background: #000;
+      color: #fff;
+      font-family: "Courier New", monospace;
+      text-align: center;
+      margin-top: 12vh;
+    }
+
+    h1 {
+      letter-spacing: 8px;
+      font-size: 42px;
+      margin-bottom: 50px;
+    }
+
+    .btn {
+      display: block;
+      width: fit-content;
+      margin: 16px auto;
+      padding: 16px 28px;
+      background: transparent;
+      border: 4px solid #fff;
+      border-radius: 100px;
+      color: #fff;
+      font-family: "Courier New", monospace;
+      font-size: 18px;
+      cursor: pointer;
+      transition: 0.2s;
+      letter-spacing: 2px;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      background: #fff;
+      color: #000;
+    }
+
+    .rainbow {
+      border: 1.9px solid transparent;
+      border-radius: 10px;
+      background: linear-gradient(#000, #000) padding-box,
+                  linear-gradient(
+                    90deg,
+                    red,
+                    orange,
+                    yellow,
+                    lime,
+                    cyan,
+                    blue,
+                    violet,
+                    red
+                  ) border-box;
+      animation: hue 4s linear infinite;
+    }
+
+    @keyframes hue {
+      0%   { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
+
+    .links {
+      margin-top: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .links a {
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .social-icon {
+      width: 42px;
+      height: 42px;
+      color: #fff;
+      transition: transform 0.25s ease;
+      animation: iconRainbow 4s linear infinite;
+    }
+
+    @keyframes iconRainbow {
+      0%   { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
+
+    .links a:hover .social-icon {
+      transform: scale(1.2);
+      filter:
+        drop-shadow(0 0 5px #fff)
+        drop-shadow(0 0 10px currentColor);
+    }
+
+    #videoOverlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #videoOverlay video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    #closeBtn {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 40px;
+      color: #fff;
+      cursor: pointer;
+      z-index: 10000;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1 id="scrambleTitle">*$#</h1>
+
+<button class="btn rainbow" onclick="playRandomVideo()">
+  PLAY ME OUTLOUD
+</button>
+
+<div class="links">
+
+  <a href="https://soundcloud.com/filthyfranktv123" target="_blank" rel="noopener noreferrer" aria-label="SoundCloud">
+    <svg viewBox="0 0 24 24" class="social-icon" aria-hidden="true">
+      <path fill="currentColor" d="M1 17.5h2v-5H1v5zm3 2h2V10H4v9.5zm3 0h2V7H7v12.5zm3 0h2V5h-2v14.5zm3 0h2V4h-2v15.5zm3 0h2v-13h-2v13zm3 0c1.66 0 3-1.34 3-3 0-1.5-1.1-2.74-2.55-2.96C21.96 10.82 20.22 9 18 9v10.5h1z"/>
+    </svg>
+  </a>
+
+  <a href="https://instagram.com/_480hz" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+    <svg viewBox="0 0 24 24" class="social-icon" aria-hidden="true">
+      <rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/>
+      <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/>
+      <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/>
+    </svg>
+  </a>
+
+  <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+    <svg viewBox="0 0 24 24" class="social-icon" aria-hidden="true">
+      <path fill="currentColor" d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.6 15.9V8.1l6.5 3.9-6.5 3.9z"/>
+    </svg>
+  </a>
+
+</div>
+
+<div id="videoOverlay">
+  <div id="closeBtn" onclick="closeVideo()">✕</div>
+  <video id="mainVideo" controls playsinline></video>
+</div>
+
+<script>
+/* ---------- VIDEO LIST ---------- */
+const videos = [
+  "Dresser140o7.mp4",
+  "echi102o7.mp4",
+  "Ram08 FINALIZED.mp4",
+  "To Observe20o.mp4",
+  
+];
+
+// Set to false if you want it to stop after each video instead of
+// automatically jumping to another random one.
+const AUTO_NEXT = true;
+
+/* ---------- SHUFFLE BAG ----------
+   All videos are shuffled into a "bag". Each press draws the next one,
+   so every video plays once before any can repeat. The bag and the last
+   video played are remembered between page reloads, so refreshing the
+   page doesn't reset the randomness. */
+const STORE_KEY = "playQueueV1";
+let queue = [];
+let lastPlayed = null;
+
+function loadState() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORE_KEY));
+    if (saved) {
+      // keep only videos that still exist in the list
+      queue = (saved.queue || []).filter(v => videos.includes(v));
+      lastPlayed = videos.includes(saved.lastPlayed) ? saved.lastPlayed : null;
+    }
+  } catch (e) { /* storage unavailable, that's fine */ }
+}
+
+function saveState() {
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify({ queue, lastPlayed }));
+  } catch (e) { /* ignore */ }
+}
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function nextVideo() {
+  if (queue.length === 0) {
+    queue = shuffle([...videos]);
+
+    // never start a new round with the video that just played
+    if (queue.length > 1 && queue[0] === lastPlayed) {
+      const swapWith = 1 + Math.floor(Math.random() * (queue.length - 1));
+      [queue[0], queue[swapWith]] = [queue[swapWith], queue[0]];
+    }
+  }
+
+  lastPlayed = queue.shift();
+  saveState();
+  return lastPlayed;
+}
+
+function playRandomVideo() {
+  playVideo(nextVideo());
+}
+
+loadState();
+
+/* ---------- PLAYER ---------- */
+const overlay = document.getElementById("videoOverlay");
+const video = document.getElementById("mainVideo");
+
+function playVideo(file) {
+  video.src = encodeURI(file);   // handles the space in "Ram08 FINALIZED.mp4"
+  video.load();
+  overlay.style.display = "flex";
+  video.play().catch(() => {});
+}
+
+function closeVideo() {
+  video.pause();
+  video.removeAttribute("src");
+  video.load();
+  overlay.style.display = "none";
+}
+
+video.addEventListener("ended", () => {
+  if (AUTO_NEXT) playRandomVideo();
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeVideo();
+});
+
+/* ---------- SCRAMBLING TITLE ---------- */
+const scrambleCharacters = "*$#";
+
+function scrambleTitle() {
+  let scrambled = "";
+  for (let i = 0; i < 3; i++) {
+    scrambled += scrambleCharacters[
+      Math.floor(Math.random() * scrambleCharacters.length)
+    ];
+  }
+  document.getElementById("scrambleTitle").textContent = scrambled;
+}
+
+setInterval(scrambleTitle, 90);
+</script>
+
+</body>
+</html>
