@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>PLAY</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
   <style>
     body {
@@ -99,12 +99,21 @@
         drop-shadow(0 0 10px currentColor);
     }
 
+    .top-disclaimer { margin: 0 auto 34px; padding: 0 14px; }
+    .top-disclaimer .primary { font-size: clamp(14px, 3.5vw, 18px); font-weight: bold; letter-spacing: 2px; }
+    .top-disclaimer .secondary { margin-top: 7px; font-size: clamp(10px, 2.7vw, 13px); color: #bbb; letter-spacing: .3px; }
+    .bottom-disclaimer { margin: 24px 12px 32px; font-size: clamp(13px, 3.3vw, 17px); font-weight: bold; letter-spacing: 2px; }
+
     #videoOverlay {
       display: none;
       position: fixed;
       inset: 0;
       background: #000;
       z-index: 9999;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
       justify-content: center;
       align-items: center;
     }
@@ -113,35 +122,52 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
+      display: block;
     }
 
     #closeBtn {
       position: absolute;
-      top: 15px;
-      right: 20px;
+      top: max(15px, env(safe-area-inset-top));
+      right: max(20px, env(safe-area-inset-right));
       font-size: 40px;
       color: #fff;
       cursor: pointer;
       z-index: 10000;
     }
+
+    .at-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Times New Roman", monospace;
+    font-size: 42px;
+    font-weight: bold;
+    line-height: 1;
+}
   </style>
 </head>
 
 <body>
 
-<h1 id="scrambleTitle">*$#</h1>
+<div class="top-disclaimer">
+  <div class="primary">PLAY ME OUTLOUD</div>
+  <div class="secondary">(Remove the tape from your phones camera)</div>
+</div>
+
+<h1 id="scrambleTitle">*$?#</h1>
 
 <button class="btn rainbow" onclick="playRandomVideo()">
-  PLAY ME OUTLOUD
+  PLAY ME
 </button>
 
 <div class="links">
 
-  <a href="https://soundcloud.com/filthyfranktv123" target="_blank" rel="noopener noreferrer" aria-label="SoundCloud">
-    <svg viewBox="0 0 24 24" class="social-icon" aria-hidden="true">
-      <path fill="currentColor" d="M1 17.5h2v-5H1v5zm3 2h2V10H4v9.5zm3 0h2V7H7v12.5zm3 0h2V5h-2v14.5zm3 0h2V4h-2v15.5zm3 0h2v-13h-2v13zm3 0c1.66 0 3-1.34 3-3 0-1.5-1.1-2.74-2.55-2.96C21.96 10.82 20.22 9 18 9v10.5h1z"/>
-    </svg>
-  </a>
+ <a href="https://soundcloud.com/filthyfranktv123"
+   target="_blank"
+   rel="noopener noreferrer"
+   aria-label="SoundCloud">
+    <span class="social-icon at-icon">@</span>
+</a>
 
   <a href="https://instagram.com/_480hz" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
     <svg viewBox="0 0 24 24" class="social-icon" aria-hidden="true">
@@ -159,9 +185,11 @@
 
 </div>
 
+<div class="bottom-disclaimer">TURN YOUR VOLUME UP</div>
+
 <div id="videoOverlay">
   <div id="closeBtn" onclick="closeVideo()">✕</div>
-  <video id="mainVideo" controls playsinline></video>
+  <video id="mainVideo" controls playsinline webkit-playsinline disablepictureinpicture></video>
 </div>
 
 <script>
@@ -243,6 +271,7 @@ function playVideo(file) {
   video.src = encodeURI(file);   // handles the space in "Ram08 FINALIZED.mp4"
   video.load();
   overlay.style.display = "flex";
+  document.body.style.overflow = "hidden";
   video.play().catch(() => {});
 }
 
@@ -251,6 +280,7 @@ function closeVideo() {
   video.removeAttribute("src");
   video.load();
   overlay.style.display = "none";
+  document.body.style.overflow = "";
 }
 
 video.addEventListener("ended", () => {
